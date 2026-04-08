@@ -1,88 +1,56 @@
- HEAD
-# React + TypeScript + Vite
+# marugoto-hiroba
+
+学年横断交流可視化アプリのフロントエンドです。React + Vite + TypeScript + Firebase で構成されています。
 
 ## Firebase / Firestore
 
-This app uses Firebase Authentication and Firestore.
-To run features that save user data, make sure Firestore is enabled in your Firebase project and the `VITE_FIREBASE_*` environment variables are configured.
+このアプリは Firebase Authentication と Firestore を使います。
+ローカル起動やデプロイ前に `VITE_FIREBASE_*` 環境変数を設定してください。
 
-## Publish Notes
+## Environment Variables
 
-- Do not commit your local `.env` file. Use `.env.example` as the shared template.
-- If you deploy to Firebase Hosting or another hosting service, make sure the same `VITE_FIREBASE_*` values are configured there.
-- When using Google sign-in, add your production domain to the Firebase Authentication authorized domains list.
+`.env` はコミットしないでください。共有用テンプレートとして `.env.example` を使ってください。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+必要な値:
 
-Currently, two official plugins are available:
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
 
-## React Compiler
+- `npm run dev`: 開発サーバー起動
+- `npm run build`: 本番ビルド
+- `npm run preview`: ビルド確認
+- `npm run deploy`: Firebase Hosting へデプロイ
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Firebase Hosting
 
-## Expanding the ESLint configuration
+このプロジェクトには Firebase Hosting 用の設定を入れています。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `firebase.json`: `dist` を公開
+- `.firebaserc`: Firebase project `puroen2260408` を既定に設定
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+初回公開時の流れ:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run build
+firebase login
+firebase deploy --only hosting
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+もしくは:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run deploy
 ```
 
-# marugoto-hiroba
- origin/main
+## Important Notes
+
+- Google Sign-In を使う場合は、公開 URL を Firebase Authentication の authorized domains に追加してください。
+- Firestore Rules は本番公開前に必ず見直してください。
+- `VITE_FIREBASE_*` はブラウザで使われる前提なので、保護は Firestore Rules / Auth 設定で行います。
