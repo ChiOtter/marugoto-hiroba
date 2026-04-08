@@ -1,0 +1,38 @@
+.date-badge {
+  position: absolute;
+  left: 48px;
+  bottom: 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #fff7ed;
+  z-index: 2;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.date-badge:hover,
+.date-badge:focus-visible {
+  opacity: 0.86;
+}
+
+.date-badge:focus-visible {
+  outline: 2px solid rgba(255, 247, 237, 0.9);
+  outline-offset: 6px;
+}
+
+.date-badge__label {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.84;
+}
+
+.date-badge__value {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 700;
+}
