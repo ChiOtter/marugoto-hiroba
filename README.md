@@ -1,3 +1,4 @@
+ HEAD
 # React + TypeScript + Vite
 
 ## Firebase / Firestore
@@ -82,3 +83,6 @@ export default defineConfig([
   },
 ])
 ```
+
+# marugoto-hiroba
+ origin/main
