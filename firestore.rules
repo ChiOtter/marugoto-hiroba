@@ -52,7 +52,7 @@ service cloud.firestore {
     }
 
     match /dailyStats/{date}/users/{uid} {
-      allow read: if hasSchoolEmail() && isOwner(uid);
+      allow read: if hasSchoolEmail();
       allow create, update: if hasSchoolEmail()
         && isOwner(uid)
         && request.resource.data.uid == request.auth.uid
