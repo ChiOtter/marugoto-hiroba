@@ -83,6 +83,31 @@ export const incrementTodayOnlineTime = async (
   }
 };
 
+export const ensureTodayStatExists = async (uid: string): Promise<void> => {
+  if (!uid) {
+    return;
+  }
+
+  try {
+    const date = getTodayJstDateString();
+    const dailyStatRef = doc(db, dailyStatsCollectionName, date, "users", uid);
+
+    await setDoc(
+      dailyStatRef,
+      {
+        uid,
+        date,
+        onlineSeconds: 0,
+        sharedSeconds: 0,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  } catch (error) {
+    console.error("ENSURE TODAY STAT EXISTS FAILED =", error);
+  }
+};
+
 export const subscribeTodayStats = (
   uid: string,
   callback: DailyStatCallback,

@@ -5,6 +5,7 @@ import { auth } from "./firebase";
 import { login, logout } from "./auth";
 import "./App.css";
 import {
+  ensureTodayStatExists,
   formatOnlineSeconds,
   getTodayJstDateLabel,
   incrementTodayOnlineTime,
@@ -24,6 +25,7 @@ import {
   subscribeOnlineUsers,
 } from "./presence";
 import {
+  createUserIfNotExists,
   getUserProfiles,
   getUserProfile,
   isProfileSetupComplete,
@@ -64,7 +66,8 @@ function App() {
       }
 
       setIsProfileLoading(true);
-      const nextProfile = await getUserProfile(user.uid);
+      const nextProfile =
+        (await createUserIfNotExists(user)) ?? (await getUserProfile(user.uid));
       setProfile(nextProfile);
       setIsProfileLoading(false);
     };
@@ -93,6 +96,7 @@ function App() {
       return;
     }
 
+    void ensureTodayStatExists(user.uid);
     const unsubscribe = subscribeTodayStats(user.uid, (stat) => {
       setTodayStat(stat);
     });
@@ -107,6 +111,7 @@ function App() {
       return;
     }
 
+    void ensureTodayStatExists(user.uid);
     const unsubscribe = subscribeTodayAllStats((stats) => {
       setAllTodayStats(stats);
     });
