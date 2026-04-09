@@ -71,7 +71,6 @@ function App() {
 
   useEffect(() => {
     if (!user) {
-      setOnlineUserIds([]);
       return;
     }
 
@@ -88,7 +87,6 @@ function App() {
 
   useEffect(() => {
     if (!user) {
-      setTodayStat(null);
       return;
     }
 
@@ -229,6 +227,7 @@ function App() {
 
       {shouldShowProfileSetup && profile && (
         <ProfileSetupModal
+          key={profile.uid}
           profile={profile}
           isSaving={isProfileSaving}
           onSave={handleSaveProfile}
@@ -245,6 +244,7 @@ function App() {
 
       {activeModal === "edit" && profile && (
         <ProfileEditModal
+          key={profile.uid}
           profile={profile}
           isSaving={isProfileSaving}
           onClose={handleCloseModal}

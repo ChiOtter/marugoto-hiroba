@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import {
   spOptions,
   type ProfileSetupInput,
@@ -31,18 +31,6 @@ function ProfileSetupModal({
     comment: profile.comment,
   });
   const [errors, setErrors] = useState<FormErrors>(initialErrors);
-
-  useEffect(() => {
-    setForm({
-      nickname: profile.nickname,
-      realName: profile.realName,
-      grade: profile.grade,
-      sp: profile.sp,
-      iconUrl: profile.iconUrl,
-      comment: profile.comment,
-    });
-    setErrors(initialErrors);
-  }, [profile]);
 
   const validate = (values: FormState): FormErrors => {
     const nextErrors: FormErrors = {};

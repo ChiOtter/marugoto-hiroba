@@ -25,7 +25,9 @@
 - `npm run dev`: 開発サーバー起動
 - `npm run build`: 本番ビルド
 - `npm run preview`: ビルド確認
-- `npm run deploy`: Firebase Hosting へデプロイ
+- `npm run deploy`: Hosting と Firestore Rules をまとめてデプロイ
+- `npm run deploy:hosting`: Firebase Hosting へデプロイ
+- `npm run deploy:rules`: Firestore Rules のみデプロイ
 
 ## Firebase Hosting
 
@@ -33,6 +35,8 @@
 
 - `firebase.json`: `dist` を公開
 - `.firebaserc`: Firebase project `puroen2260408` を既定に設定
+- `firestore.rules`: Firestore の最低限のアクセス制御
+- `firestore.indexes.json`: Firestore indexes 設定
 
 初回公開時の流れ:
 
@@ -40,7 +44,7 @@
 npm install
 npm run build
 firebase login
-firebase deploy --only hosting
+firebase deploy
 ```
 
 もしくは:

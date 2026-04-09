@@ -32,18 +32,6 @@ function ProfileEditModal({
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    setForm({
-      nickname: profile.nickname,
-      realName: profile.realName,
-      grade: profile.grade,
-      sp: profile.sp,
-      iconUrl: profile.iconUrl,
-      comment: profile.comment,
-    });
-    setErrors({});
-  }, [profile]);
-
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();

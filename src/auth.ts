@@ -3,6 +3,7 @@ import { auth } from "./firebase";
 import { createUserIfNotExists } from "./users";
 
 const provider = new GoogleAuthProvider();
+const allowedEmailDomain = import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? "kamiyama.ac.jp";
 
 export const login = async () => {
   try {
@@ -12,9 +13,9 @@ export const login = async () => {
     console.log("LOGIN USER =", result.user);
     console.log("LOGIN EMAIL =", email);
 
-    if (!email?.endsWith("@kamiyama.ac.jp")) {
+    if (!email?.endsWith(`@${allowedEmailDomain}`)) {
       await signOut(auth);
-      alert("kamiyama.ac.jp のアカウントのみ利用できます");
+      alert(`${allowedEmailDomain} のアカウントのみ利用できます`);
       return null;
     }
 

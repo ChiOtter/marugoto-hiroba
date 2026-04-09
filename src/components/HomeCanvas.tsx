@@ -1,6 +1,7 @@
 import type { UserProfile } from "../users";
 import DateBadge from "./DateBadge";
-import UserBubble, { toUserBubbleData } from "./UserBubble";
+import UserBubble from "./UserBubble";
+import { toUserBubbleData } from "./userBubbleData";
 import "./HomeCanvas.css";
 
 type HomeCanvasProps = {

@@ -1,13 +1,6 @@
 import type { CSSProperties } from "react";
-import type { UserProfile } from "../users";
+import type { UserBubbleData } from "./userBubbleData";
 import "./UserBubble.css";
-
-export type UserBubbleData = {
-  uid: string;
-  displayName: string;
-  comment: string;
-  imageUrl: string;
-};
 
 type UserBubbleProps = {
   className?: string;
@@ -49,15 +42,6 @@ const getInitials = (name: string): string => {
   }
 
   return trimmedName.slice(0, 2).toUpperCase();
-};
-
-export const toUserBubbleData = (profile: UserProfile): UserBubbleData => {
-  return {
-    uid: profile.uid,
-    displayName: profile.nickname || profile.displayName || "Unknown User",
-    comment: profile.comment,
-    imageUrl: profile.iconUrl || profile.photoURL || "",
-  };
 };
 
 export default UserBubble;
