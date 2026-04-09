@@ -23,9 +23,9 @@ export type PresenceRecord = {
 type OnlineUsersCallback = (users: PresenceRecord[]) => void;
 
 const presenceCollectionName = "presence";
-const heartbeatIntervalMs = 30_000;
-const onlineThresholdMs = 90_000;
-const refreshIntervalMs = 15_000;
+const heartbeatIntervalMs = 60_000;
+const onlineThresholdMs = 180_000;
+const refreshIntervalMs = 60_000;
 
 const heartbeatTimers = new Map<string, number>();
 const beforeUnloadHandlers = new Map<string, () => void>();

@@ -8,6 +8,7 @@ import {
   formatOnlineSeconds,
   getTodayJstDateLabel,
   incrementTodayOnlineTime,
+  subscribeTodayAllStats,
   subscribeTodayStats,
   type DailyStat,
 } from "./dailyStats";
@@ -41,6 +42,8 @@ function App() {
   const [selectedProfile, setSelectedProfile] = useState<UserProfile | null>(null);
   const [activeModal, setActiveModal] = useState<"view" | "edit" | "daily" | null>(null);
   const [todayStat, setTodayStat] = useState<DailyStat | null>(null);
+  const [allTodayStats, setAllTodayStats] = useState<DailyStat[]>([]);
+  const [closestProfile, setClosestProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -104,14 +107,28 @@ function App() {
       return;
     }
 
+    const unsubscribe = subscribeTodayAllStats((stats) => {
+      setAllTodayStats(stats);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
     const intervalId = window.setInterval(() => {
-      void incrementTodayOnlineTime(user.uid, 30);
-    }, 30_000);
+      void incrementTodayOnlineTime(user.uid, 60, onlineUserIds.length * 60);
+    }, 60_000);
 
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [user]);
+  }, [onlineUserIds.length, user]);
 
   useEffect(() => {
     const loadOnlineProfiles = async () => {
@@ -131,6 +148,33 @@ function App() {
 
     void loadOnlineProfiles();
   }, [onlineUserIds]);
+
+  useEffect(() => {
+    const loadClosestProfile = async () => {
+      if (!user || !todayStat) {
+        setClosestProfile(null);
+        return;
+      }
+
+      const closestStat = allTodayStats
+        .filter((stat) => stat.uid !== user.uid)
+        .sort(
+          (left, right) =>
+            Math.abs(left.onlineSeconds - todayStat.onlineSeconds) -
+            Math.abs(right.onlineSeconds - todayStat.onlineSeconds),
+        )[0];
+
+      if (!closestStat) {
+        setClosestProfile(null);
+        return;
+      }
+
+      const nextProfile = await getUserProfile(closestStat.uid);
+      setClosestProfile(nextProfile);
+    };
+
+    void loadClosestProfile();
+  }, [allTodayStats, todayStat, user]);
 
   const handleSaveProfile = async (input: ProfileSetupInput) => {
     if (!user) {
@@ -190,9 +234,44 @@ function App() {
     !!profile &&
     !isProfileSetupComplete(profile);
   const currentUid = user?.uid ?? null;
+  const closestStat = currentUid
+    ? allTodayStats
+        .filter((stat) => stat.uid !== currentUid)
+        .sort(
+          (left, right) =>
+            Math.abs(left.onlineSeconds - (todayStat?.onlineSeconds ?? 0)) -
+            Math.abs(right.onlineSeconds - (todayStat?.onlineSeconds ?? 0)),
+        )[0] ?? null
+    : null;
   const dailySummary = getDailySummaryMock({
     dateLabel: getTodayJstDateLabel(),
     ownConnectionTime: formatOnlineSeconds(todayStat?.onlineSeconds ?? 0),
+    sharedConnectionTime: formatOnlineSeconds(todayStat?.sharedSeconds ?? 0),
+    timeDifference: formatOnlineSeconds(
+      Math.abs(
+        (todayStat?.onlineSeconds ?? 0) - (closestStat?.onlineSeconds ?? 0),
+      ),
+    ),
+    closestPerson: closestProfile
+      ? {
+          displayName:
+            closestProfile.nickname ||
+            closestProfile.displayName ||
+            "Unknown User",
+          grade: closestProfile.grade || "未設定",
+          sp: closestProfile.sp || "未設定",
+          comment: closestProfile.comment,
+          iconUrl: closestProfile.iconUrl,
+          photoURL: closestProfile.photoURL,
+        }
+      : {
+          displayName: "まだいません",
+          grade: "-",
+          sp: "-",
+          comment: "今日はまだ比較できる相手がいません",
+          iconUrl: "",
+          photoURL: "",
+        },
   });
 
   return (

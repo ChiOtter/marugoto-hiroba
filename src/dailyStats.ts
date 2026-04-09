@@ -1,4 +1,5 @@
 import {
+  collection,
   doc,
   increment,
   onSnapshot,
@@ -12,12 +13,14 @@ export type DailyStat = {
   uid: string;
   date: string;
   onlineSeconds: number;
+  sharedSeconds: number;
 };
 
 type DailyStatCallback = (stat: DailyStat | null) => void;
+type DailyStatsCallback = (stats: DailyStat[]) => void;
 
 const dailyStatsCollectionName = "dailyStats";
-const dateRefreshIntervalMs = 30_000;
+const dateRefreshIntervalMs = 60_000;
 
 export const getTodayJstDateString = (): string => {
   const formatter = new Intl.DateTimeFormat("en-CA", {
@@ -54,6 +57,7 @@ export const formatOnlineSeconds = (seconds: number): string => {
 export const incrementTodayOnlineTime = async (
   uid: string,
   seconds: number,
+  sharedSeconds = 0,
 ): Promise<void> => {
   if (!uid || seconds <= 0) {
     return;
@@ -69,6 +73,7 @@ export const incrementTodayOnlineTime = async (
         uid,
         date,
         onlineSeconds: increment(seconds),
+        sharedSeconds: increment(sharedSeconds),
         updatedAt: serverTimestamp(),
       },
       { merge: true },
@@ -102,6 +107,7 @@ export const subscribeTodayStats = (
             uid,
             date,
             onlineSeconds: 0,
+            sharedSeconds: 0,
           });
           return;
         }
@@ -112,11 +118,66 @@ export const subscribeTodayStats = (
           date,
           onlineSeconds:
             typeof data.onlineSeconds === "number" ? data.onlineSeconds : 0,
+          sharedSeconds:
+            typeof data.sharedSeconds === "number" ? data.sharedSeconds : 0,
         });
       },
       (error) => {
         console.error("SUBSCRIBE TODAY STATS FAILED =", error);
         callback(null);
+      },
+    );
+  };
+
+  subscribeForDate(currentDate);
+
+  const refreshId = window.setInterval(() => {
+    const nextDate = getTodayJstDateString();
+    if (nextDate === currentDate) {
+      return;
+    }
+
+    currentDate = nextDate;
+    subscribeForDate(nextDate);
+  }, dateRefreshIntervalMs);
+
+  return () => {
+    window.clearInterval(refreshId);
+    unsubscribeSnapshot?.();
+  };
+};
+
+export const subscribeTodayAllStats = (
+  callback: DailyStatsCallback,
+): Unsubscribe => {
+  let currentDate = getTodayJstDateString();
+  let unsubscribeSnapshot: Unsubscribe | null = null;
+
+  const subscribeForDate = (date: string) => {
+    unsubscribeSnapshot?.();
+
+    const dailyStatsRef = collection(db, dailyStatsCollectionName, date, "users");
+    unsubscribeSnapshot = onSnapshot(
+      dailyStatsRef,
+      (snapshot) => {
+        callback(
+          snapshot.docs.map((docSnapshot) => {
+            const data = docSnapshot.data();
+
+            return {
+              uid: docSnapshot.id,
+              date,
+              onlineSeconds:
+                typeof data.onlineSeconds === "number" ? data.onlineSeconds : 0,
+              sharedSeconds:
+                typeof data.sharedSeconds === "number" ? data.sharedSeconds : 0,
+            };
+          }),
+        );
+      },
+      (error) => {
+        console.error("SUBSCRIBE TODAY ALL STATS FAILED =", error);
+        callback([]);
       },
     );
   };

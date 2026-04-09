@@ -4,6 +4,7 @@ export type DailySummaryClosestProfile = {
   grade: string;
   iconUrl: string;
   sp: string;
+  photoURL?: string;
 };
 
 export type DailySummary = {
