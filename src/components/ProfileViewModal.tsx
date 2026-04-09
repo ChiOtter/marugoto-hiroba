@@ -87,14 +87,48 @@ function ProfileViewModal({
               いま同じ時間に開いている相手のプロフィールです。
             </p>
           </div>
-          <button
-            type="button"
-            className="profile-modal__close"
-            onClick={onClose}
-            aria-label="閉じる"
-          >
-            ×
-          </button>
+          <div className="profile-modal__actions">
+            {currentUid !== profile.uid && (
+              <button
+                type="button"
+                className={`profile-like-icon${
+                  !isLikeAvailable && !isLikeLoading && !isLikeSending
+                    ? " profile-like-icon--sent"
+                    : ""
+                }`}
+                disabled={!isLikeAvailable || isLikeLoading || isLikeSending}
+                onClick={handleLike}
+                aria-label={
+                  isLikeLoading
+                    ? "いいね状態を確認中"
+                    : isLikeSending
+                      ? "いいね送信中"
+                      : isLikeAvailable
+                        ? "いいねを送る"
+                        : "今日のいいねは送信済み"
+                }
+                title={
+                  isLikeLoading
+                    ? "確認中..."
+                    : isLikeSending
+                      ? "送信中..."
+                      : isLikeAvailable
+                        ? "いいね"
+                        : "送信済み"
+                }
+              >
+                ♡
+              </button>
+            )}
+            <button
+              type="button"
+              className="profile-modal__close"
+              onClick={onClose}
+              aria-label="閉じる"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <div className="profile-modal__body">
@@ -122,24 +156,9 @@ function ProfileViewModal({
             <DetailRow label="SP" value={profile.sp} />
             <DetailRow label="一言" value={profile.comment || "未設定"} />
           </div>
-
-          {currentUid !== profile.uid && (
+          {currentUid !== profile.uid && likeMessage && (
             <div className="profile-like">
-              <button
-                type="button"
-                className="profile-like__button"
-                disabled={!isLikeAvailable || isLikeLoading || isLikeSending}
-                onClick={handleLike}
-              >
-                {isLikeLoading
-                  ? "確認中..."
-                  : isLikeSending
-                    ? "送信中..."
-                    : isLikeAvailable
-                      ? "いいね"
-                      : "送信済み"}
-              </button>
-              {likeMessage && <p className="profile-like__message">{likeMessage}</p>}
+              <p className="profile-like__message">{likeMessage}</p>
             </div>
           )}
         </div>

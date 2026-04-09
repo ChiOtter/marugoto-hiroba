@@ -55,6 +55,12 @@
   line-height: 1.6;
 }
 
+.profile-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .profile-modal__close {
   flex-shrink: 0;
   width: 40px;
@@ -65,6 +71,35 @@
   color: #0f172a;
   font-size: 20px;
   cursor: pointer;
+}
+
+.profile-like-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #be123c;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.profile-like-icon:hover,
+.profile-like-icon:focus-visible {
+  background: #fecdd3;
+}
+
+.profile-like-icon--sent,
+.profile-like-icon:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
 .profile-modal__body {
@@ -220,27 +255,11 @@
   margin-top: 20px;
 }
 
-.profile-like__button {
-  width: 100%;
-  border: none;
-  border-radius: 999px;
-  background: #2563eb;
-  color: #ffffff;
-  padding: 14px 20px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.profile-like__button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .profile-like__message {
   margin: 0;
   color: #475569;
   font-size: 14px;
+  text-align: center;
 }
 
 .daily-summary__hero {
