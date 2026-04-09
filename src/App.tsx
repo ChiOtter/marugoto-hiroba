@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { auth } from "./firebase";
@@ -46,6 +46,7 @@ function App() {
   const [todayStat, setTodayStat] = useState<DailyStat | null>(null);
   const [allTodayStats, setAllTodayStats] = useState<DailyStat[]>([]);
   const [closestProfile, setClosestProfile] = useState<UserProfile | null>(null);
+  const onlineUserCountRef = useRef(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -122,18 +123,32 @@ function App() {
   }, [user]);
 
   useEffect(() => {
+    onlineUserCountRef.current = onlineUserIds.length;
+  }, [onlineUserIds.length]);
+
+  useEffect(() => {
     if (!user) {
       return;
     }
 
+    void incrementTodayOnlineTime(
+      user.uid,
+      60,
+      onlineUserCountRef.current * 60,
+    );
+
     const intervalId = window.setInterval(() => {
-      void incrementTodayOnlineTime(user.uid, 60, onlineUserIds.length * 60);
+      void incrementTodayOnlineTime(
+        user.uid,
+        60,
+        onlineUserCountRef.current * 60,
+      );
     }, 60_000);
 
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [onlineUserIds.length, user]);
+  }, [user]);
 
   useEffect(() => {
     const loadOnlineProfiles = async () => {
