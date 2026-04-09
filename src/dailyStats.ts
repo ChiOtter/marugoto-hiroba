@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   increment,
   onSnapshot,
   serverTimestamp,
@@ -91,6 +92,11 @@ export const ensureTodayStatExists = async (uid: string): Promise<void> => {
   try {
     const date = getTodayJstDateString();
     const dailyStatRef = doc(db, dailyStatsCollectionName, date, "users", uid);
+    const dailyStatSnapshot = await getDoc(dailyStatRef);
+
+    if (dailyStatSnapshot.exists()) {
+      return;
+    }
 
     await setDoc(
       dailyStatRef,
