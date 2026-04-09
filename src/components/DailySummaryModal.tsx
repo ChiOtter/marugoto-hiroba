@@ -32,7 +32,7 @@ function DailySummaryModal({ summary, onClose }: DailySummaryModalProps) {
             <p className="profile-modal__eyebrow">Daily Summary</p>
             <h2 className="profile-modal__title">今日のふりかえり</h2>
             <p className="profile-modal__description">
-              まずは簡易版の mock 表示です。後で実データへ差し替えやすい構成にしています。
+              今日の接続状況をもとにした、概算ベースのふりかえりです。
             </p>
           </div>
           <button
@@ -72,9 +72,9 @@ function DailySummaryModal({ summary, onClose }: DailySummaryModalProps) {
 
             <div className="daily-summary__person">
               <div className="daily-summary__avatar">
-                {summary.closestPerson.iconUrl ? (
+                {summary.closestPerson.iconUrl || summary.closestPerson.photoURL ? (
                   <img
-                    src={summary.closestPerson.iconUrl}
+                    src={summary.closestPerson.iconUrl || summary.closestPerson.photoURL}
                     alt={summary.closestPerson.displayName}
                   />
                 ) : (
