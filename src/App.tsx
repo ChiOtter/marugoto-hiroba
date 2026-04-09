@@ -254,6 +254,9 @@ function App() {
     !!profile &&
     !isProfileSetupComplete(profile);
   const currentUid = user?.uid ?? null;
+  const onlineTimeLabels = Object.fromEntries(
+    allTodayStats.map((stat) => [stat.uid, formatOnlineSeconds(stat.onlineSeconds)]),
+  );
   const closestStat = currentUid
     ? allTodayStats
         .filter((stat) => stat.uid !== currentUid)
@@ -314,6 +317,7 @@ function App() {
           <HomeCanvas
             currentUser={profile}
             onlineUsers={onlineProfiles}
+            onlineTimeLabels={onlineTimeLabels}
             onClickDate={handleOpenDailySummary}
             onClickSelf={handleOpenSelfProfile}
             onClickUser={handleOpenUserProfile}

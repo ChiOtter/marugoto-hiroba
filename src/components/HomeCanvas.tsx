@@ -7,6 +7,7 @@ import "./HomeCanvas.css";
 type HomeCanvasProps = {
   currentUser: UserProfile | null;
   onlineUsers: UserProfile[];
+  onlineTimeLabels: Record<string, string>;
   onClickDate: () => void;
   onClickSelf: (uid: string) => void;
   onClickUser: (uid: string) => void;
@@ -20,6 +21,7 @@ type BubblePosition = {
 function HomeCanvas({
   currentUser,
   onlineUsers,
+  onlineTimeLabels,
   onClickDate,
   onClickSelf,
   onClickUser,
@@ -45,7 +47,7 @@ function HomeCanvas({
         {onlineUsers.map((user, index) => (
           <UserBubble
             key={user.uid}
-            data={toUserBubbleData(user)}
+            data={toUserBubbleData(user, onlineTimeLabels[user.uid] ?? "0分")}
             onClick={onClickUser}
             style={positions[index]}
           />
@@ -57,7 +59,10 @@ function HomeCanvas({
           <p className="home-canvas__self-label">You</p>
           <UserBubble
             className="user-bubble--self"
-            data={toUserBubbleData(currentUser)}
+            data={toUserBubbleData(
+              currentUser,
+              onlineTimeLabels[currentUser.uid] ?? "0分",
+            )}
             onClick={onClickSelf}
           />
         </aside>

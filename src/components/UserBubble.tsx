@@ -29,7 +29,10 @@ function UserBubble({ className = "", data, onClick, style }: UserBubbleProps) {
           <span>{initials}</span>
         )}
       </div>
-      <p className="user-bubble__name">{data.displayName}</p>
+      <p className="user-bubble__meta">
+        <span className="user-bubble__name">{data.displayName}</span>
+        <span className="user-bubble__time">{data.onlineTimeLabel}</span>
+      </p>
     </button>
   );
 }

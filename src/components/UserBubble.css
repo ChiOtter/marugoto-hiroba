@@ -59,9 +59,17 @@
   object-fit: cover;
 }
 
-.user-bubble__name {
+.user-bubble__meta {
   max-width: 100%;
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.user-bubble__name {
   color: #f8fafc;
   font-size: 14px;
   font-weight: 700;
@@ -69,6 +77,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.user-bubble__time {
+  color: #bfdbfe;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .user-bubble--self {
